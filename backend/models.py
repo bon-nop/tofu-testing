@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime, TIMESTAMP
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -33,3 +33,29 @@ class Member(Base):
     position = Column(String)
     address = Column(String)
     expect_salary = Column(Integer)
+
+class Queue(Base):
+    __tablename__ = "queue"
+
+    id = Column(Integer, primary_key=True, index=True)
+    wh_id = Column(Integer)
+    door = Column(Integer)
+    vehicle_types = Column(Integer)
+    vehicle_license = Column(String)
+    start_load_time = Column(DateTime)
+    finish_load_time = Column(DateTime)
+    status = Column(Integer)
+    created_at = Column(TIMESTAMP)
+    updated_at = Column(DateTime)
+
+class Warehouse(Base):
+    __tablename__ = "warehouse"
+
+    id = Column(Integer, primary_key=True, index=True)
+    wh_name = Column(String)
+    door_1 = Column(Integer)
+    door_2 = Column(Integer)
+    door_3 = Column(Integer)
+    door_4 = Column(Integer)
+    created_at = Column(TIMESTAMP)
+    updated_at = Column(DateTime)

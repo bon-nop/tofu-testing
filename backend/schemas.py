@@ -51,3 +51,40 @@ class MemberCreate(MemberBase):
 class Member(MemberBase):
     id: int
 
+
+class QueueBase(BaseModel):
+    wh_id: int
+    door: int | None = None
+    vehicle_types: int
+    vehicle_license: str | None = None
+    start_load_time: str | None = None
+    finish_load_time: str | None = None
+    status: int
+    created_at: str | None = None
+    updated_at: str | None = None
+
+
+class QueueCreate(QueueBase):
+    pass
+
+
+class Queue(QueueBase):
+    id: int
+
+
+class WarehouseBase(BaseModel):
+    wh_name: str
+    door_1: int | None = None
+    door_2: int | None = None
+    door_3: int | None = None
+    door_4: int | None = None
+    created_at: str | None = None
+    updated_at: str | None = None
+
+
+class WarehouseCreate(WarehouseBase):
+    pass
+
+
+class Warehouse(WarehouseBase):
+    id: int

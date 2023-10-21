@@ -111,10 +111,74 @@ def delete_member(db: Session, member_id: int):
     return db_member
 
 
-# def create_member(db: Session, member: schemas.MemberCreate):
-#     db_member = models.Member(first_name=member.first_name, last_name=member.last_name, 
-#                               position=member.position, address=member.address, expect_salary=member.expect_salary)
-#     db.add(db_member)
-#     db.commit()
-#     db.refresh(db_member)
-#     return db_member
+def get_warehouse(db: Session, warehouse_id: int):
+    return db.query(models.Warhouse).filter(models.Warhouse.id == warehouse_id).first()
+
+
+def get_warehouses(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Warhouse).offset(skip).limit(limit).all()
+
+
+def create_warehouse(db: Session, warehouse: schemas.WarehouseCreate):
+    db_warehouse = models.Warhouse(wh_name=warehouse.wh_name, door_1=warehouse.door_1, door_2=warehouse.door_2, 
+                                   door_3=warehouse.door_3, door_4=warehouse.door_4, created_at=warehouse.created_at, 
+                                   updated_at=warehouse.updated_at)
+    db.add(db_warehouse)
+    db.commit()
+    db.refresh(db_warehouse)
+    return db_warehouse
+
+
+def update_warehouse(db: Session, update_data: schemas.WarehouseCreate, warehouse_id: int):
+    db_warehouse = get_warehouse(db, warehouse_id)
+
+    if db_warehouse is None:
+        return None  # warehouse not found
+
+    # Update warehouse attributes based on the data in update_data
+    for key, value in update_data.dict().items():
+        setattr(db_warehouse, key, value)
+
+    db.commit()
+    db.refresh(db_warehouse)
+    return db_warehouse
+
+
+def get_queue(db: Session, q_id: int):
+    return db.query(models.Queue).filter(models.Queue.id == q_id).first()
+
+
+def get_queues(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Queue).offset(skip).limit(limit).all()
+
+
+def create_queue(db: Session, queue: schemas.QueueCreate):
+    db_queue = models.Queue(wh_id=queue.wh_id, door=queue.door, vehicle_types=queue.vehicle_types, vehicle_license=queue.vehicle_license,
+                            start_load_time=queue.start_load_time, finish_load_time=queue.finish_load_time, status=queue.status,
+                            created_at=queue.created_at, updated_at=queue.updated_at)
+    db.add(db_queue)
+    db.commit()
+    db.refresh(db_queue)
+    return db_queue
+
+
+def update_queue(db: Session, update_data: schemas.QueueCreate, q_id: int):
+    db_queue = get_queue(db, q_id)
+
+    if db_queue is None:
+        return None  # warehouse not found
+
+    # Update warehouse attributes based on the data in update_data
+    for key, value in update_data.dict().items():
+        setattr(db_queue, key, value)
+
+    db.commit()
+    db.refresh(db_queue)
+    return db_queue
+
+
+def delete_queue(db: Session, q_id: int):
+    db_queue = get_queue(db, q_id)
+    db.delete(db_queue)
+    db.commit()
+    return db_queue

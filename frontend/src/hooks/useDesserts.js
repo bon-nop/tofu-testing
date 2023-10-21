@@ -3,55 +3,8 @@ import axios from 'axios';
 
 const backendUrl = 'http://localhost:8000';
 
-function useDesserts() {
-
-  const desserts = reactive([
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-    },
-    {
-      name: 'Ice cream sandwich',
-      calories: 237,
-    },
-    {
-      name: 'Eclair',
-      calories: 262,
-    },
-    {
-      name: 'Cupcake',
-      calories: 305,
-    },
-    {
-      name: 'Gingerbread',
-      calories: 356,
-    },
-    {
-      name: 'Jelly bean',
-      calories: 375,
-    },
-    {
-      name: 'Lollipop',
-      calories: 392,
-    },
-    {
-      name: 'Honeycomb',
-      calories: 408,
-    },
-    {
-      name: 'Donut',
-      calories: 452,
-    },
-    {
-      name: 'KitKat',
-      calories: 518,
-    },
-  ]);
-
-  return { desserts };
-}
-
 const members = ref([]);
+const queues = ref([]);
 
 function getMembers() {
   axios.get(`${backendUrl}/members`)
@@ -164,4 +117,30 @@ function deleteMember(member_id) {
 
 }
 
-export { useDesserts, getMembers, createMember, updateMember, deleteMember, downloadMembersExcel, downloadMemberOnceExcel };
+function getQueues() {
+  axios.get(`${backendUrl}/queues`)
+    .then((response) => {
+      queues.value = response.data;
+    })
+    .catch((error) => {
+      console.error('Error fetching queues:', error);
+    });
+
+  return { queues };
+}
+
+function createQueue(vehicleData) {
+  axios
+    .post(`${backendUrl}/queues`, vehicleData)
+    .then((response) => {
+      
+      console.log('Queue add:', response.data);
+      // getMembers();
+    })
+    .catch((error) => {
+      console.error('Error adding a new queue:', error);
+    });
+}
+
+export { getMembers, createMember, updateMember, deleteMember, downloadMembersExcel, downloadMemberOnceExcel,
+          getQueues, createQueue };

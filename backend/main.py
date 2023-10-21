@@ -148,3 +148,64 @@ def export_member_excel(member_id: int, db: Session = Depends(get_db)):
     response.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     return response
+
+
+@app.get("/warehouses", response_model=list[schemas.Warehouse])
+def read_warehouses(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    warehouses = crud.get_warehouses(db, skip=skip, limit=limit)
+    return warehouses
+
+
+@app.get("/warehouses/{warehouse_id}", response_model=schemas.Warehouse)
+def read_member(warehouse_id: int, db: Session = Depends(get_db)):
+    db_warehouse = crud.get_warehouse(db, warehouse_id=warehouse_id)
+    if db_warehouse is None:
+        raise HTTPException(status_code=404, detail="Warehouse not found")
+    return db_warehouse
+
+
+@app.post("/warehouses", response_model=schemas.Warehouse)
+def create_warehose(warehouse: schemas.WarehouseCreate, db: Session = Depends(get_db)):
+    return crud.create_warehouse(db, warehouse=warehouse)
+
+
+@app.put("/warehouses/{warehouse_id}", response_model=schemas.Warehouse)
+def update_member(warehouse_id: int, update_data: schemas.WarehouseCreate, db: Session = Depends(get_db)):
+    update_warehouse = crud.update_warehouse(db, update_data, warehouse_id)
+
+    if update_warehouse is None:
+        raise HTTPException(status_code=404, detail="Warehouse not found")
+
+    return update_warehouse
+
+
+@app.get("/queues", response_model=list[schemas.Queue])
+def read_queues(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    queues = crud.get_queues(db, skip=skip, limit=limit)
+    return queues
+
+
+@app.post("/queues", response_model=schemas.Queue)
+def create_queue(queue: schemas.QueueCreate, db: Session = Depends(get_db)):
+    return crud.create_queue(db, queue=queue)
+
+
+@app.put("/queues/{q_id}", response_model=schemas.Queue)
+def update_queue(q_id: int, update_data: schemas.QueueCreate, db: Session = Depends(get_db)):
+    update_queue = crud.update_queue(db, update_data, q_id)
+
+    if update_queue is None:
+        raise HTTPException(status_code=404, detail="Queue not found")
+
+    return update_queue
+
+
+@app.delete("/queues/{q_id}")
+def delete_queue(q_id: int, db: Session = Depends(get_db)):
+    db_queue = crud.get_queue(db, q_id=q_id)
+    
+    if db_queue is None:
+        raise HTTPException(status_code=404, detail="Queue not found")
+
+    crud.delete_queue(db, q_id)
+    return {"message": "Queue deleted"}
